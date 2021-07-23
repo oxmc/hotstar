@@ -10,7 +10,7 @@ const {
 } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 
-const GURL = "https://meet.google.com/";
+const GURL = "https://www.hotstar.com/";
 
 function createMainWindow() {
   const mainWindowState = windowStateKeeper({
