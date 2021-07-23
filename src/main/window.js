@@ -10,7 +10,7 @@ const {
 } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 
-const GOOGLE_MEET_URL = "https://meet.google.com/";
+const GURL = "https://meet.google.com/";
 
 function createMainWindow() {
   const mainWindowState = windowStateKeeper({
@@ -42,7 +42,7 @@ function createMainWindow() {
     }
   });
 
-  const googleMeetView = (global.googleMeetView = new BrowserView({
+  const MainView = (global.MainView = new BrowserView({
     webPreferences: {
       preload: path.join(
         __dirname,
@@ -53,16 +53,16 @@ function createMainWindow() {
       ),
     },
   }));
-  mainWindow.setBrowserView(googleMeetView);
-  googleMeetView.webContents.loadURL(GOOGLE_MEET_URL);
-  googleMeetView.setBounds({
+  mainWindow.setBrowserView(MainView);
+  MainView.webContents.loadURL(URL);
+  MainView.setBounds({
     x: 0,
     y: 40,
     width: mainWindow.getBounds().width,
     height: mainWindow.getBounds().height - 40,
   });
-  googleMeetView.webContents.on("did-finish-load", () => {
-    googleMeetView.webContents.insertCSS(
+  MainView.webContents.on("did-finish-load", () => {
+    MainView.webContents.insertCSS(
       fs
         .readFileSync(
           path.join(__dirname, "..", "renderer", "css", "screen.css")
@@ -70,10 +70,10 @@ function createMainWindow() {
         .toString()
     );
   });
-  // googleMeetView.webContents.openDevTools();
+  // MainView.webContents.openDevTools();
 
   mainWindow.on("resize", () => {
-    googleMeetView.setBounds({
+    MainView.setBounds({
       x: 0,
       y: 40,
       width: mainWindow.getBounds().width,
@@ -108,7 +108,7 @@ function createMainWindow() {
   });
 
   ipcMain.on("window.home", () => {
-    googleMeetView.webContents.loadURL(GOOGLE_MEET_URL);
+    MainView.webContents.loadURL(GOOGLE_MEET_URL);
   });
 
   let canvasWindow = createCanvasWindow();
@@ -143,7 +143,7 @@ function createMainWindow() {
   });
 
   ipcMain.on("screenshare.stop", () => {
-    googleMeetView.webContents.send("screenshare.stop");
+    MainView.webContents.send("screenshare.stop");
   });
 
   mainWindow.on("closed", () => {
